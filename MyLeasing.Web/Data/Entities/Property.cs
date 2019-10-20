@@ -51,6 +51,8 @@ namespace MyLeasing.Web.Data.Entities
         public Owner Owner { get; set; }
 
         public ICollection<PropertyImage> PropertyImages { get; set; }
+
+        public ICollection<Contract> Contracts { get; set; }
     }
 
 }

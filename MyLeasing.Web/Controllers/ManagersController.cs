@@ -10,25 +10,22 @@ using MyLeasing.Web.Data.Entities;
 
 namespace MyLeasing.Web.Controllers
 {
-    public class OwnersController : Controller
+    public class ManagersController : Controller
     {
-        private readonly DataContext _dataContext;
+        private readonly DataContext _context;
 
-        public OwnersController(DataContext dataContext)
+        public ManagersController(DataContext context)
         {
-            _dataContext = dataContext;
+            _context = context;
         }
 
-        // GET: Owners
-        public IActionResult Index()
+        // GET: Managers
+        public async Task<IActionResult> Index()
         {
-            return View(_dataContext.Owners
-                .Include(o => o.User)
-                .Include(o => o.Properties)
-                .Include(o => o.Contracts));
+            return View(await _context.Managers.ToListAsync());
         }
 
-        // GET: Owners/Details/5
+        // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,47 +33,39 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _dataContext.Owners
-                .Include(o => o.User)
-                .Include(o => o.Properties)
-                .ThenInclude(p => p.PropertyType)
-                .Include(o => o.Properties)
-                .ThenInclude(p => p.PropertyImages)
-                .Include(o => o.Contracts)
-                .ThenInclude(c => c.Lessee)
-                .ThenInclude(l => l.User)
+            var manager = await _context.Managers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (owner == null)
+            if (manager == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(manager);
         }
 
-        // GET: Owners/Create
+        // GET: Managers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Owners/Create
+        // POST: Managers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] Owner owner)
+        public async Task<IActionResult> Create([Bind("Id")] Manager manager)
         {
             if (ModelState.IsValid)
             {
-                _dataContext.Add(owner);
-                await _dataContext.SaveChangesAsync();
+                _context.Add(manager);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(manager);
         }
 
-        // GET: Owners/Edit/5
+        // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,22 +73,22 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _dataContext.Owners.FindAsync(id);
-            if (owner == null)
+            var manager = await _context.Managers.FindAsync(id);
+            if (manager == null)
             {
                 return NotFound();
             }
-            return View(owner);
+            return View(manager);
         }
 
-        // POST: Owners/Edit/5
+        // POST: Managers/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id")] Owner owner)
+        public async Task<IActionResult> Edit(int id, [Bind("Id")] Manager manager)
         {
-            if (id != owner.Id)
+            if (id != manager.Id)
             {
                 return NotFound();
             }
@@ -108,12 +97,12 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    _dataContext.Update(owner);
-                    await _dataContext.SaveChangesAsync();
+                    _context.Update(manager);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OwnerExists(owner.Id))
+                    if (!ManagerExists(manager.Id))
                     {
                         return NotFound();
                     }
@@ -124,10 +113,10 @@ namespace MyLeasing.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(manager);
         }
 
-        // GET: Owners/Delete/5
+        // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,30 +124,30 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _dataContext.Owners
+            var manager = await _context.Managers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (owner == null)
+            if (manager == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(manager);
         }
 
-        // POST: Owners/Delete/5
+        // POST: Managers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var owner = await _dataContext.Owners.FindAsync(id);
-            _dataContext.Owners.Remove(owner);
-            await _dataContext.SaveChangesAsync();
+            var manager = await _context.Managers.FindAsync(id);
+            _context.Managers.Remove(manager);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OwnerExists(int id)
+        private bool ManagerExists(int id)
         {
-            return _dataContext.Owners.Any(e => e.Id == id);
+            return _context.Managers.Any(e => e.Id == id);
         }
     }
 }
