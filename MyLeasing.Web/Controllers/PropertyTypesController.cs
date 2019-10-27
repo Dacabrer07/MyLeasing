@@ -65,7 +65,7 @@ namespace MyLeasing.Web.Controllers
             return View(propertyType);
         }
 
-        // GET: PropertyTypes/Edit/5
+        
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,10 +80,7 @@ namespace MyLeasing.Web.Controllers
             }
             return View(propertyType);
         }
-
-        // POST: PropertyTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+                
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] PropertyType propertyType)
@@ -125,25 +122,22 @@ namespace MyLeasing.Web.Controllers
             }
 
             var propertyType = await _context.PropertyTypes
+                .Include(pt => pt.Properties)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (propertyType == null)
             {
                 return NotFound();
             }
-
-            return View(propertyType);
-        }
-
-        // POST: PropertyTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var propertyType = await _context.PropertyTypes.FindAsync(id);
+            if (propertyType.Properties.Count > 0)
+            {
+                ModelState.AddModelError(string.Empty, "Sorry, the property Types can´t deleted because it has properties");
+                return RedirectToAction(nameof(Index));
+            }
             _context.PropertyTypes.Remove(propertyType);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        
 
         private bool PropertyTypeExists(int id)
         {
