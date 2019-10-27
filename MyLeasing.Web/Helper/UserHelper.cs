@@ -4,7 +4,7 @@ using MyLeasing.Web.Helper;
 using MyLeasing.Web.Models;
 using System.Threading.Tasks;
 
-namespace MyLeasing.Web.Helpers
+namespace MyLeasing.Web.Helper
 {
     public class UserHelper : IUserHelper
     {

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyLeasing.Web.Data;
 using MyLeasing.Web.Helper;
-using MyLeasing.Web.Helpers;
+using MyLeasing.Web.Helper;
 using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web
@@ -50,6 +50,7 @@ namespace MyLeasing.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
